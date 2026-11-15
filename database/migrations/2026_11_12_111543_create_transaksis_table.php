@@ -1,0 +1,46 @@
+
+<?php
+
+use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
+
+return new class extends Migration
+{
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
+    {
+        Schema::create('transaksis', function (Blueprint $table) {
+            $table->id();
+
+            $table->foreignId('anggota_id')
+                  ->constrained('anggotas')
+                  ->cascadeOnDelete();
+
+            $table->enum('jenis', [
+                'simpanan',
+                'pinjaman',
+            ]);
+
+            $table->decimal('jumlah', 15, 2);
+            $table->date('tanggal');
+            $table->text('keterangan')->nullable();
+
+            $table->timestamps();
+
+            // Index untuk pencarian transaksi
+            $table->index(['anggota_id', 'tanggal']);
+            $table->index('jenis');
+        });
+    }
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
+    {
+        Schema::dropIfExists('transaksis');
+    }
+};
